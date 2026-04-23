@@ -1,16 +1,22 @@
 # portfolio-ledger-skill
 
-Hermes skill for storing stock positions and trade records in a local SQLite ledger.
+一个给 Hermes 使用的本地股票账本技能，用来把结构化的持仓和交易记录写入本地 SQLite。
 
-This project does not parse screenshots.
+英文说明见：`README.en.md`
 
-The intended flow is:
+## 这个项目解决什么问题
 
-1. Hermes or another LLM turns screenshots, documents, or user text into structured JSON.
-2. This skill validates the JSON.
-3. This skill writes positions and trades into a local SQLite database.
+这个 skill 不负责解析截图。
 
-## Features
+它的定位很明确：
+
+1. Hermes 或其他大模型先把截图、PDF、表格、自然语言整理成结构化 JSON
+2. 这个 skill 负责校验 JSON
+3. 这个 skill 负责把数据写入本地 SQLite
+
+也就是说，它是一个“本地股票账本接口层”，不是 OCR 工具。
+
+## 功能
 
 1. `replace_positions`
 2. `append_trades`
@@ -19,7 +25,7 @@ The intended flow is:
 5. `get_import_batch`
 6. `manifest`
 
-## Layout
+## 目录结构
 
 ```text
 .
@@ -34,139 +40,132 @@ The intended flow is:
 └── tests/
 ```
 
-## Requirements
+## 环境要求
 
 - Python 3.11+
-- No third-party Python packages required
+- 不依赖第三方 Python 包
 
-## Quick start
+## 本地直接运行
 
-Show manifest:
+### 查看 manifest
 
 ```bash
 python3 skill.py manifest
 ```
 
-Save a positions snapshot:
+### 写入一份持仓快照
 
 ```bash
 python3 skill.py < examples/tool_replace_positions.json
 ```
 
-Append trades:
+### 追加交易记录
 
 ```bash
 python3 skill.py < examples/tool_append_trades.json
 ```
 
-Query positions:
+### 查询当前持仓
 
 ```bash
 printf '%s' '{"tool":"get_positions","input":{"portfolio_id":"main"}}' | python3 skill.py
 ```
 
-## Database path
+## 数据库路径
 
-Default:
+默认会写到：
 
 ```text
 data/portfolio.db
 ```
 
-Override with:
+也可以通过环境变量覆盖：
 
 ```bash
 PORTFOLIO_LEDGER_DB=/tmp/portfolio.db python3 skill.py manifest
 ```
 
-## Tests
+## 测试
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-## Hermes usage
+## 在 Hermes 中安装
 
-If you install this as a local Hermes skill, the skill prompt can call:
-
-```bash
-python3 skill.py < examples/tool_replace_positions.json
-```
-
-Or construct its own envelope:
-
-```json
-{
-  "tool": "append_trades",
-  "input": {
-    "portfolio_id": "main",
-    "trades": []
-  }
-}
-```
-
-## Install in Hermes
-
-If you want to use this skill through Hermes, add this repo as a skill source and install the skill:
+先把这个仓库加成 Hermes 的 skill source：
 
 ```bash
 hermes skills tap add Waitfish/portfolio-ledger-skill
+```
+
+再安装 skill：
+
+```bash
 hermes skills install Waitfish/portfolio-ledger-skill/portfolio-ledger
 ```
 
-If Hermes asks for a category, use `productivity`.
+如果 Hermes 要你指定分类，可以用：
 
-Check that the skill is installed:
+```bash
+hermes skills install Waitfish/portfolio-ledger-skill/portfolio-ledger --category productivity
+```
+
+检查是否安装成功：
 
 ```bash
 hermes skills list | grep portfolio-ledger
 ```
 
-## Use in Hermes
+## 在 Hermes 中使用
 
-Start a Hermes session with the skill preloaded:
+启动一个带这个 skill 的 Hermes 会话：
 
 ```bash
 hermes chat -s portfolio-ledger
 ```
 
-Example prompts:
-
-### Save positions
+### 示例：保存持仓
 
 ```text
 Use the portfolio-ledger skill to save a full positions snapshot for portfolio_id main at 2026-04-22T15:30:00+08:00 with one holding: AAPL quantity 10, avg_cost 100, market US, cost_currency USD.
 ```
 
-### Query positions
+### 示例：查询当前持仓
 
 ```text
 Use the portfolio-ledger skill to query current positions for portfolio_id main and return the JSON result.
 ```
 
-### Append trades
+### 示例：追加交易
 
 ```text
 Use the portfolio-ledger skill to append one trade for portfolio_id main: trade_time 2026-04-23T09:35:22+08:00, symbol AAPL, side BUY, quantity 2, price 100, amount 200.
 ```
 
-### Query trades
+### 示例：查询交易
 
 ```text
 Use the portfolio-ledger skill to query trades for portfolio_id main.
 ```
 
-## Recommended smoke test
+## 推荐自测流程
 
-After installation, test this order:
+建议按这个顺序测一轮：
 
 1. `python3 skill.py manifest`
 2. `python3 skill.py < examples/tool_replace_positions.json`
 3. `python3 skill.py < examples/tool_append_trades.json`
 4. `python3 -m unittest discover -s tests -v`
+5. `hermes chat -s portfolio-ledger`
 
-Then test once through Hermes:
+## 说明
 
-```bash
-hermes chat -s portfolio-ledger
-```
+这个 skill 的设计目标是：
+
+1. 显式 API
+2. 本地 SQLite 落库
+3. 持仓快照和交易流水分离
+4. 所有写入都有批次记录，方便追踪和排错
+
+如果你要把截图直接接进来，应该让上游模型先把截图转成结构化 JSON，再调用这个 skill。
