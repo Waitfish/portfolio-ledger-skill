@@ -1,0 +1,21 @@
+{
+  "portfolio_id": "main",
+  "as_of_time": "2026-04-22T15:30:00+08:00",
+  "source_kind": "image",
+  "source_ref": "upload-positions-001",
+  "positions": [
+    {
+      "symbol": "AAPL",
+      "name": "Apple Inc.",
+      "market": "US",
+      "quantity": 100,
+      "available_quantity": 100,
+      "avg_cost": 171.23,
+      "cost_currency": "USD",
+      "last_price": 189.5,
+      "market_value": 18950,
+      "pnl_amount": 1827,
+      "pnl_percent": 10.67
+    }
+  ]
+}

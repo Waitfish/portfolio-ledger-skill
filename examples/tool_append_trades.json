@@ -1,0 +1,23 @@
+{
+  "tool": "append_trades",
+  "input": {
+    "portfolio_id": "main",
+    "source_kind": "image",
+    "source_ref": "upload-trades-001",
+    "trades": [
+      {
+        "trade_time": "2026-04-23T09:35:22+08:00",
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "side": "BUY",
+        "trade_type": "BUY",
+        "quantity": 20,
+        "price": 185.2,
+        "amount": 3704,
+        "fee": 1.99,
+        "tax": 0,
+        "currency": "USD"
+      }
+    ]
+  }
+}
