@@ -1,5 +1,9 @@
 # portfolio-ledger-skill
 
+[![CI](https://github.com/Waitfish/portfolio-ledger-skill/actions/workflows/python-tests.yml/badge.svg)](https://github.com/Waitfish/portfolio-ledger-skill/actions/workflows/python-tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Release](https://img.shields.io/github/v/release/Waitfish/portfolio-ledger-skill)](https://github.com/Waitfish/portfolio-ledger-skill/releases)
+
 一个给 Hermes 使用的本地股票账本技能，用来把结构化的持仓和交易记录写入本地 SQLite。
 
 英文说明见：`README.en.md`
@@ -117,6 +121,26 @@ hermes skills install Waitfish/portfolio-ledger-skill/portfolio-ledger --categor
 hermes skills list | grep portfolio-ledger
 ```
 
+### 一键安装脚本
+
+如果你已经把仓库 clone 到本地，可以直接运行：
+
+```bash
+bash install.sh
+```
+
+这个脚本会把 `SKILL.md` 安装到：
+
+```text
+~/.hermes/skills/productivity/portfolio-ledger/
+```
+
+注意：
+
+1. 这个脚本安装的是 Hermes 的 skill 提示词
+2. Python 实现仍然来自你当前 clone 下来的仓库目录
+3. 所以推荐在这个仓库目录内使用 Hermes
+
 ## 在 Hermes 中使用
 
 启动一个带这个 skill 的 Hermes 会话：
@@ -158,6 +182,14 @@ Use the portfolio-ledger skill to query trades for portfolio_id main.
 3. `python3 skill.py < examples/tool_append_trades.json`
 4. `python3 -m unittest discover -s tests -v`
 5. `hermes chat -s portfolio-ledger`
+
+## 发布版本
+
+你可以在 GitHub Releases 页面获取当前发布版本：
+
+```text
+https://github.com/Waitfish/portfolio-ledger-skill/releases
+```
 
 ## 说明
 
