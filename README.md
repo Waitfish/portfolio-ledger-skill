@@ -104,3 +104,69 @@ Or construct its own envelope:
   }
 }
 ```
+
+## Install in Hermes
+
+If you want to use this skill through Hermes, add this repo as a skill source and install the skill:
+
+```bash
+hermes skills tap add Waitfish/portfolio-ledger-skill
+hermes skills install Waitfish/portfolio-ledger-skill/portfolio-ledger
+```
+
+If Hermes asks for a category, use `productivity`.
+
+Check that the skill is installed:
+
+```bash
+hermes skills list | grep portfolio-ledger
+```
+
+## Use in Hermes
+
+Start a Hermes session with the skill preloaded:
+
+```bash
+hermes chat -s portfolio-ledger
+```
+
+Example prompts:
+
+### Save positions
+
+```text
+Use the portfolio-ledger skill to save a full positions snapshot for portfolio_id main at 2026-04-22T15:30:00+08:00 with one holding: AAPL quantity 10, avg_cost 100, market US, cost_currency USD.
+```
+
+### Query positions
+
+```text
+Use the portfolio-ledger skill to query current positions for portfolio_id main and return the JSON result.
+```
+
+### Append trades
+
+```text
+Use the portfolio-ledger skill to append one trade for portfolio_id main: trade_time 2026-04-23T09:35:22+08:00, symbol AAPL, side BUY, quantity 2, price 100, amount 200.
+```
+
+### Query trades
+
+```text
+Use the portfolio-ledger skill to query trades for portfolio_id main.
+```
+
+## Recommended smoke test
+
+After installation, test this order:
+
+1. `python3 skill.py manifest`
+2. `python3 skill.py < examples/tool_replace_positions.json`
+3. `python3 skill.py < examples/tool_append_trades.json`
+4. `python3 -m unittest discover -s tests -v`
+
+Then test once through Hermes:
+
+```bash
+hermes chat -s portfolio-ledger
+```
